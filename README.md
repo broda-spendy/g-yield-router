@@ -1,2 +1,3 @@
-# g-yield-router
-G$ Yield Router, built with GoodBuild
+# G$ Yield Router
+
+Built with [GoodBuild](https://goodbuildit.xyz). Edits made in GoodBuild are pushed here automatically.

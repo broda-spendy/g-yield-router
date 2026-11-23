@@ -1,0 +1,277 @@
+{
+  "summary": "Sente is a G$ (GoodDollar) gifting app on Celo: anyone can send GoodDollar to a wallet with a short note, like sending a small gift instead of a cold transfer. This first milestone ships the real interface and a fully working local demo of the send flow (no on-chain payments yet), for anyone with the link.",
+  "direction": "Warm wooded editorial: the forest palette already in the tokens (off-white green-tinted background, deep forest green, white paper cards) with a serif display face (Fraunces) over a round geometric sans (DM Sans), generous space, 24px rounded \"gift card\" surfaces with hairline borders and a faint leaf-blob wash behind the hero; the mood of a handwritten note tucked into paper, calm and human, neve",
+  "pages": [
+    {
+      "route": "/",
+      "purpose": "Home and the send screen: explain the app in one line and let someone compose a G$ gift locally.",
+      "elements": [
+        "Layout top bar: app mark (a small leaf glyph in a green rounded square) + wordmark \"Sente\", nav links Home / Activity / About, ConnectButton on the right; below",
+        "Hero: eyebrow chip \"GoodDollar on Celo\", headline \"Send G$ like a gift, not a transaction.\", one-sentence subline about sending GoodDollar with a note to any wa",
+        "Send panel (the hero's right-hand card, overlapping slightly on wide screens, full width on phone): a labelled Recipient input (label \"Recipient\" with the place",
+        "Primary button whose label follows the amount, e.g. \"Send 10 G$\" or \"Send 25 G$ after typing; pressing it with no recipient shows a danger Notice \"Add a recipie",
+        "A persistent sky-toned info Notice inside the panel: \"Demo mode: nothing leaves your wallet yet. Gifts made here are saved on this device only.\"",
+        "On a valid send: a success Notice reading \"Demo gift recorded. G$ transfers turn on soon.\" and the gift is appended to local demo history; the form keeps the no",
+        "\"How it works\" band (bg-primary, three short numbered steps: pick a recipient, write a note, send G$) with the last step marked \"coming soon\"",
+        "Demo history strip: the two most recent local demo gifts with amount, note and short recipient, plus a link \"See all gifts\" to /activity, and a friendly empty s",
+        "Footer: short line about G$ on Celo, links to Activity and About"
+      ]
+    },
+    {
+      "route": "/activity",
+      "purpose": "Shows every G$ gift composed on this device (local demo history).",
+      "elements": [
+        "Page heading \"Gifts you've sent\" with a line explaining these are demo gifts stored on this device",
+        "RefreshButton-style \"Clear demo gifts\" outline button (with a confirm dialog) when there is at least one entry",
+        "List of gift rows from local storage: amount in G$, note, short recipient address, relative time (\"just now\", \"5 min ago\")",
+        "Empty state card: a leaf icon, \"No gifts yet\", a line inviting the visitor to compose one, and a Link button \"Send your first G$\" back to /",
+        "Summary row: count of demo gifts and total G$ value, labelled demo"
+      ]
+    },
+    {
+      "route": "/about",
+      "purpose": "Explains G$, Sente and what this milestone can and cannot do yet.",
+      "elements": [
+        "Eyebrow and heading \"What is G$?\" plus two short paragraphs: GoodDollar is a free-to-earn currency on Celo, Sente is a way to pass a little of it on with a note",
+        "Four honest status cards: \"Interface ready\", \"Demo gifts on this device\", \"Sending G$ goes live in the next milestone\" and \"Built on Celo\"",
+        "Accordion FAQ: \"What is GoodDollar?\", \"Do I need a wallet to try the demo?\", \"Where do my demo gifts go?\", \"When will real G$ transfers work?\"",
+        "Closing band with a Link button back to the send screen"
+      ]
+    }
+  ],
+  "contracts": [],
+  "data": [],
+  "acceptance": [
+    {
+      "name": "Home explains the app and shows demo mode",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "expect": {
+            "text": "Send G$ like a gift, not a transaction."
+          }
+        },
+        {
+          "expect": {
+            "text": "Demo mode"
+          }
+        },
+        {
+          "expect": {
+            "text": "Demo mode: nothing leaves your wallet yet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quick amount chip updates the send button",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "click": {
+            "text": "25"
+          }
+        },
+        {
+          "expect": {
+            "text": "Send 25 G$"
+          }
+        },
+        {
+          "fill": {
+            "label": "Amount"
+          },
+          "value": "250"
+        },
+        {
+          "expect": {
+            "text": "Send 250 G$"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sending with no recipient is refused",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "click": {
+            "text": "Send 10 G$"
+          }
+        },
+        {
+          "expect": {
+            "text": "Add a recipient address."
+          }
+        }
+      ]
+    },
+    {
+      "name": "A badly formed address is refused",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "fill": {
+            "label": "Recipient"
+          },
+          "value": "tola.eth"
+        },
+        {
+          "fill": {
+            "label": "Amount"
+          },
+          "value": "15"
+        },
+        {
+          "click": {
+            "text": "Send 15 G$"
+          }
+        },
+        {
+          "expect": {
+            "text": "That doesn't look like a wallet address."
+          }
+        }
+      ]
+    },
+    {
+      "name": "A valid gift is recorded as a demo gift and appears in activity",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "fill": {
+            "label": "Recipient"
+          },
+          "value": "0x1B4d6a7c8E2f3A4b5C6d7E8f901a2B3c4D5e6F70"
+        },
+        {
+          "click": {
+            "text": "50"
+          }
+        },
+        {
+          "fill": {
+            "label": "Note"
+          },
+          "value": "Jollof money"
+        },
+        {
+          "click": {
+            "text": "Send 50 G$"
+          }
+        },
+        {
+          "expect": {
+            "text": "Demo gift recorded"
+          }
+        },
+        {
+          "expect": {
+            "text": "Jollof money"
+          }
+        },
+        {
+          "goto": "/activity"
+        },
+        {
+          "expect": {
+            "text": "Gifts you've sent"
+          }
+        },
+        {
+          "expect": {
+            "text": "Jollof money"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activity starts with a friendly empty state",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/activity"
+        },
+        {
+          "expect": {
+            "text": "Gifts you've sent"
+          }
+        }
+      ]
+    },
+    {
+      "name": "About page answers what G$ is",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/about"
+        },
+        {
+          "expect": {
+            "text": "What is G$?"
+          }
+        },
+        {
+          "click": {
+            "text": "What is GoodDollar?"
+          }
+        },
+        {
+          "expect": {
+            "text": "free-to-earn"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Navigation reaches every page",
+      "needs": "local",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "click": {
+            "text": "About"
+          }
+        },
+        {
+          "expect": {
+            "route": "/about"
+          }
+        },
+        {
+          "click": {
+            "text": "Activity"
+          }
+        },
+        {
+          "expect": {
+            "route": "/activity"
+          }
+        }
+      ]
+    }
+  ],
+  "outOfScope": [
+    "On-chain G$ transfers, the Send contract and deploy manifest (next milestone)",
+    "Wallet-signed gifts or any real payment: this build is demo only, saved on the device",
+    "Recipient usernames, contacts or address book",
+    "Multi-chain support, swaps or G$ earning/claiming"
+  ]
+}

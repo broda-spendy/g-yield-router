@@ -1,0 +1,46 @@
+html,
+body,
+#root {
+  min-height: 100%;
+}
+body {
+  margin: 0;
+}
+
+/* A soft paper tooth behind the whole app: barely there, stops the page reading as a flat fill. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 12% 8%, rgba(21, 128, 61, 0.07), transparent 45%),
+    radial-gradient(circle at 88% 0%, rgba(20, 83, 45, 0.06), transparent 40%);
+}
+
+/* The hero's leaf wash, drawn once and reused. */
+.leaf-wash {
+  background-image: radial-gradient(60% 60% at 70% 30%, rgba(21, 128, 61, 0.14), transparent 70%),
+    radial-gradient(50% 50% at 20% 80%, rgba(20, 83, 45, 0.08), transparent 70%);
+  filter: blur(4px);
+}
+
+/* Scroll reveals: fade and lift once, only when the visitor hasn't asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .rise-2 {
+    animation-delay: 0.08s;
+  }
+  .rise-3 {
+    animation-delay: 0.16s;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}

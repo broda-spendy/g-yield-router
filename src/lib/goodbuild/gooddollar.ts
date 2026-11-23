@@ -10,7 +10,7 @@ import { subscribeChanges } from "./live";
 import { appChain, subscribeWallet, walletState } from "./wallet";
 
 /** Written by GoodBuild for this project's network. */
-export const gdAddress: Address | null = "0x62B8B11039FcfE5aB0C56E502b1C372A3d2a9c7A";
+export const gdAddress: Address | null = "0xefcb956cd433a659b76d1eb540484f19592cee4a";
 
 const client = createPublicClient({ chain: appChain, transport: http() });
 let decimals: number | null = null;

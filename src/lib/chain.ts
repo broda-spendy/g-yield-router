@@ -8,7 +8,7 @@ import { requireWallet } from "./goodbuild/wallet";
 export { connectWallet, disconnectWallet, walletProvider } from "./goodbuild/wallet";
 
 /** Written by GoodBuild for this project's target network. */
-export const chain = celo;
+export const chain = celoSepolia;
 export const chains = { [celoSepolia.id]: celoSepolia, [celo.id]: celo } as const;
 
 export const publicClient = createPublicClient({ chain, transport: http() });

@@ -9,12 +9,12 @@
  * wallet on a phone. The preview offers browser wallets only.
  */
 import type { Address, EIP1193Provider } from "viem";
-import { celo } from "viem/chains";
+import { celoSepolia } from "viem/chains";
 import { markChanged } from "./live";
 import { openWalletChooser } from "./walletChooser";
 
 /** Written by GoodBuild for this project's target network. */
-export const appChain = celo;
+export const appChain = celoSepolia;
 
 export interface WalletInfo {
   /** "minipay", "walletconnect", "injected", or the wallet's EIP-6963 rdns such as "io.metamask". */

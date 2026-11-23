@@ -1,12 +1,19 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, CircleDashed, Coins, Sprout } from "lucide-react";
+import { CheckCircle2, CircleDashed, Coins, Sprout, Wallet } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 
 const status = [
   { icon: CheckCircle2, title: "Interface ready", body: "You can compose a gift with an address, an amount and a note.", tone: "success" as const, label: "Done" },
+  {
+    icon: Wallet,
+    title: "Your wallet connects",
+    body: "Connect a wallet on Celo, see which network you are on, and read your real G$ balance.",
+    tone: "success" as const,
+    label: "Live",
+  },
   { icon: Sprout, title: "Demo gifts on this device", body: "Gifts you write are saved in this browser so you can reread them.", tone: "success" as const, label: "Done" },
   {
     icon: CircleDashed,

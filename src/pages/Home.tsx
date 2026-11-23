@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Link2, PenLine, Send, UserRoundCheck } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { SendPanel } from "../components/SendPanel";
+import { WalletCard } from "../components/WalletCard";
 import { GiftRow } from "../components/GiftCard";
 import { Badge } from "../components/ui/badge";
 import { showAmount, totalAmount, useDemoGifts } from "../lib/gifts";
+import { useWallet } from "../lib/useWallet";
 
 const steps = [
   { icon: UserRoundCheck, title: "Pick a recipient", body: "Paste any Celo wallet address. No usernames, no sign-up." },
@@ -15,6 +17,7 @@ const steps = [
 
 export default function Home() {
   const { gifts } = useDemoGifts();
+  const { account, networkName } = useWallet();
 
   useEffect(() => {
     document.title = "Sente · Send G$ like a gift";
@@ -46,8 +49,9 @@ export default function Home() {
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-2">
+              <Badge tone={account ? "success" : "default"}>{account ? "Wallet connected" : "Wallet ready to connect"}</Badge>
+              <Badge>Live on {networkName}</Badge>
               <Badge tone="warning">Demo mode</Badge>
-              <Badge>Gifts saved on this device</Badge>
             </div>
 
             <dl className="mt-9 grid max-w-md grid-cols-2 gap-4 border-t border-border pt-6">
@@ -65,8 +69,9 @@ export default function Home() {
             </dl>
           </div>
 
-          <div className="lg:-mt-2">
+          <div className="grid gap-4 lg:-mt-2">
             <SendPanel />
+            <WalletCard />
           </div>
         </div>
       </section>

@@ -1,11 +1,16 @@
 import { useState } from "react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Wallet } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Notice } from "./ui/notice";
+import { Skeleton } from "./ui/skeleton";
+import { ConnectButton } from "./ConnectButton";
 import { GiftCard } from "./GiftCard";
 import { addDemoGift, looksLikeAddress, showAmount } from "../lib/gifts";
+import { useWallet } from "../lib/useWallet";
+import { useGdBalance } from "../lib/goodbuild/gooddollar";
+import { shortAddress } from "../lib/utils";
 
 const QUICK = ["10", "25", "50", "100"];
 const NOTE_MAX = 80;
@@ -15,6 +20,8 @@ const NOTE_MAX = 80;
  * and says plainly that no G$ leaves the wallet in this milestone.
  */
 export function SendPanel() {
+  const { account, networkName, onRightNetwork, wrongNetwork, switchNetwork } = useWallet();
+  const gd = useGdBalance();
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
@@ -50,6 +57,57 @@ export function SendPanel() {
             Local demo
           </span>
         </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-border bg-background px-3 py-2.5">
+          {account ? (
+            <>
+              <Wallet className="size-4 shrink-0 text-accent" aria-hidden="true" />
+              <div className="min-w-0">
+                <p className="font-mono text-xs leading-tight">{shortAddress(account)}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {onRightNetwork ? "On " + networkName : wrongNetwork ? "Wallet is on another network" : "Checking network…"}
+                  {gd.available && onRightNetwork ? " · " + (gd.loading && !gd.formatted ? "loading G$…" : (gd.formatted ?? "0") + " G$ available") : ""}
+                </p>
+              </div>
+              {wrongNetwork ? (
+                <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={switchNetwork}>
+                  Switch to {networkName}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="ml-auto"
+                  onClick={() => setRecipient(account)}
+                  aria-label="Use my own wallet address as the recipient"
+                >
+                  Use mine
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-xs leading-snug text-muted-foreground">Connect a wallet to see your G$ here.</p>
+              <div className="ml-auto">
+                <ConnectButton />
+              </div>
+            </>
+          )}
+        </div>
+
+        {account && gd.loading && !gd.formatted && (
+          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <Skeleton className="h-3 w-24" />
+            reading your G$ balance
+          </div>
+        )}
+
+        {account && gd.error && (
+          <Notice tone="danger" className="mt-3">
+            {gd.error}
+          </Notice>
+        )}
 
         <div className="mt-5 grid gap-4">
           <div className="grid gap-1.5">

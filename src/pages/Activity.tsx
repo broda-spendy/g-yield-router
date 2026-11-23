@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Leaf, Trash2 } from "lucide-react";
 import { GiftRow } from "../components/GiftCard";
 import { GiftLinkRow } from "../components/GiftLinkRow";
+import { WalletCard } from "../components/WalletCard";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -129,6 +130,10 @@ export default function Activity() {
             </ul>
           </div>
         )}
+      </section>
+
+      <section className="mt-10">
+        <WalletCard />
       </section>
 
       <p className="mt-8 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">

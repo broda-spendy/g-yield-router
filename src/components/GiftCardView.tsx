@@ -8,11 +8,14 @@ export function GiftCardView({
   note,
   from,
   sealed,
+  displayAmount,
   className,
 }: {
   amount: string;
   note: string;
   from: string;
+  /** Already-formatted amount (e.g. read from the chain) to show instead of formatting `amount`. */
+  displayAmount?: string;
   /** The recipient's view: a wax-style seal instead of the "preview" label. */
   sealed?: boolean;
   className?: string;
@@ -35,7 +38,7 @@ export function GiftCardView({
       </div>
 
       <p className="mt-3 font-display text-5xl font-semibold tabular-nums tracking-tight">
-        {hasAmount ? showAmount(amount) : "0"}
+        {displayAmount ?? (hasAmount ? showAmount(amount) : "0")}
         <span className="ml-1.5 text-2xl font-normal text-muted-foreground">G$</span>
       </p>
 
@@ -50,7 +53,7 @@ export function GiftCardView({
         <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.14em] text-accent">
           GoodDollar
         </span>
-        <span className="text-[11px] text-muted-foreground">{sealed ? "Unopened · demo card" : "Demo card · signed by nobody yet"}</span>
+        <span className="text-[11px] text-muted-foreground">{sealed ? "Unopened · GoodDollar on Celo" : "Preview · not funded yet"}</span>
       </div>
     </div>
   );

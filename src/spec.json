@@ -1,49 +1,197 @@
 {
-  "summary": "Sente is a G$ (GoodDollar) gifting app on Celo: anyone can send GoodDollar to a wallet with a short note, like sending a small gift instead of a cold transfer. This first milestone ships the real interface and a fully working local demo of the send flow (no on-chain payments yet), for anyone with the link.",
-  "direction": "Warm wooded editorial: the forest palette already in the tokens (off-white green-tinted background, deep forest green, white paper cards) with a serif display face (Fraunces) over a round geometric sans (DM Sans), generous space, 24px rounded \"gift card\" surfaces with hairline borders and a faint leaf-blob wash behind the hero; the mood of a handwritten note tucked into paper, calm and human, neve",
+  "summary": "Sente is a G$ (GoodDollar) gifting app on Celo: send GoodDollar to any wallet with a short note, or fund a shareable gift card that the recipient claims from a link. This milestone adds the on-chain work: two small contracts (a note-carrying transfer and a funded claim-code card) with tests, the send panel wired to the real wallet transfer, gift links that carry real G$, and a claim page the recipient opens to receive the money.",
+  "direction": "Warm wooded editorial: off-white green-tinted background, deep forest green, white paper cards, Fraunces display over DM Sans, generous space, 24px rounded gift-card surfaces with hairline borders and a faint leaf wash behind the hero; calm and human, like a note tucked into paper. Keep the existing tokens and layout and add on-chain states in the same voice.",
   "pages": [
     {
       "route": "/",
-      "purpose": "Home and the send screen: explain the app in one line and let someone compose a G$ gift locally.",
+      "purpose": "Home and the send screen: compose a real G$ gift with a note and send it from the connected wallet.",
       "elements": [
-        "Layout top bar: app mark (a small leaf glyph in a green rounded square) + wordmark \"Sente\", nav links Home / Activity / About, ConnectButton on the right; below",
-        "Hero: eyebrow chip \"GoodDollar on Celo\", headline \"Send G$ like a gift, not a transaction.\", one-sentence subline about sending GoodDollar with a note to any wa",
-        "Send panel (the hero's right-hand card, overlapping slightly on wide screens, full width on phone): a labelled Recipient input (label \"Recipient\" with the place",
-        "Primary button whose label follows the amount, e.g. \"Send 10 G$\" or \"Send 25 G$ after typing; pressing it with no recipient shows a danger Notice \"Add a recipie",
-        "A persistent sky-toned info Notice inside the panel: \"Demo mode: nothing leaves your wallet yet. Gifts made here are saved on this device only.\"",
-        "On a valid send: a success Notice reading \"Demo gift recorded. G$ transfers turn on soon.\" and the gift is appended to local demo history; the form keeps the no",
-        "\"How it works\" band (bg-primary, three short numbered steps: pick a recipient, write a note, send G$) with the last step marked \"coming soon\"",
-        "Demo history strip: the two most recent local demo gifts with amount, note and short recipient, plus a link \"See all gifts\" to /activity, and a friendly empty s",
-        "Footer: short line about G$ on Celo, links to Activity and About"
+        "Existing hero, eyebrow, headline \"Send G$ like a gift, not a transaction.\" and the How-it-works band stay as they are",
+        "SendPanel: Recipient, Amount with quick chips, Note, and a primary button whose label follows the amount (\"Send 25 G$\")",
+        "SendPanel wallet strip: connected address, network badge, live G$ balance with a Skeleton while loading",
+        "When the contract address is missing: Notice \"Deploy the gift contract to go live\" and the send button disabled; the local demo recording still happens below it",
+        "Validation notices unchanged: \"Add a recipient address.\", \"That doesn't look like a wallet address.\", \"Enter an amount to send.\"",
+        "On success a success Notice \"Gift sent\" with the amount and note; the button shows pending while the wallet signs",
+        "New card: \"Gifts on chain\" with the last three on-chain gifts (amount, note, short sender and recipient, time), Skeleton, empty state and one RefreshButton",
+        "Gift-links band still links to /gift, now saying the card is funded with real G$"
+      ]
+    },
+    {
+      "route": "/gift",
+      "purpose": "Create a funded gift card link: lock a real amount of G$ behind a claim code and copy the link to share.",
+      "elements": [
+        "Heading in the same voice; copy now says the card is funded on Celo and claimed by whoever opens the link",
+        "Form: Amount with quick chips, Note, optional From name, and \"Keep it claimable for\" (7 / 30 / 90 days); primary button \"Fund this card\" whose label shows the a",
+        "Live preview card of what the recipient will see",
+        "When no contract is deployed: Notice \"Deploy the gift contract to go live\" and the fund button disabled, preview only",
+        "On success: success Notice \"Card funded\" with the link, Copy link and Share buttons, and a warning that anyone with the link can claim it",
+        "Errors as danger Notices: no wallet, wrong network, insufficient G$, amount 0, rejected transaction",
+        "Examples row of ready-made cards stays (amount and note suggestions that fill the form)"
+      ]
+    },
+    {
+      "route": "/gift/:code",
+      "purpose": "The recipient opens the link, reads the note and claims the G$ into their own wallet.",
+      "elements": [
+        "Card view: amount, note, from name and a \"Funded on Celo\" badge, values read from the chain by card id",
+        "Claim panel: \"Claim N G$\" button, ConnectButton when no wallet, Skeleton while reading the card",
+        "States: claimable (enabled button), claiming (pending), just claimed by you (success Notice with amount), already claimed, expired (with a note that the sender ",
+        "A Notice that the code lives in the link so anyone holding the link can claim it",
+        "Copy link button and \"Make your own card\" link back to /gift",
+        "A malformed code keeps the existing \"This card didn't arrive intact\" page"
       ]
     },
     {
       "route": "/activity",
-      "purpose": "Shows every G$ gift composed on this device (local demo history).",
+      "purpose": "Every gift sent and every card funded from the connected wallet, read from the chain, alongside the local demo list.",
       "elements": [
-        "Page heading \"Gifts you've sent\" with a line explaining these are demo gifts stored on this device",
-        "RefreshButton-style \"Clear demo gifts\" outline button (with a confirm dialog) when there is at least one entry",
-        "List of gift rows from local storage: amount in G$, note, short recipient address, relative time (\"just now\", \"5 min ago\")",
-        "Empty state card: a leaf icon, \"No gifts yet\", a line inviting the visitor to compose one, and a Link button \"Send your first G$\" back to /",
-        "Summary row: count of demo gifts and total G$ value, labelled demo"
+        "Heading \"Gifts you've sent\" and summary tiles: on-chain gift count and total G$ sent, with Skeleton and empty states",
+        "On-chain list of gifts sent by this wallet: amount, note, short recipient, time, newest first, with a RefreshButton",
+        "Section \"Cards you funded\": each claim-code card with amount, note, a claimable / claimed / expired badge and its link",
+        "Local demo gifts section kept below, labelled \"Demo, saved on this device\", with the existing Clear demo gifts dialog",
+        "No wallet connected: Notice with ConnectButton. No deployed contract: deploy Notice and no chain calls",
+        "Gift links kept on this device section stays"
       ]
     },
     {
       "route": "/about",
-      "purpose": "Explains G$, Sente and what this milestone can and cannot do yet.",
+      "purpose": "Explains G$, Sente and exactly what is live now.",
       "elements": [
-        "Eyebrow and heading \"What is G$?\" plus two short paragraphs: GoodDollar is a free-to-earn currency on Celo, Sente is a way to pass a little of it on with a note",
-        "Four honest status cards: \"Interface ready\", \"Demo gifts on this device\", \"Sending G$ goes live in the next milestone\" and \"Built on Celo\"",
-        "Accordion FAQ: \"What is GoodDollar?\", \"Do I need a wallet to try the demo?\", \"Where do my demo gifts go?\", \"When will real G$ transfers work?\"",
-        "Closing band with a Link button back to the send screen"
+        "Existing heading, paragraphs and FAQ accordion",
+        "Status cards updated: \"Interface ready\", \"Wallet connects and reads G$\", \"Gifts send on chain with a note\" live, \"Gift cards claim by link\" live, \"Built on Celo",
+        "New FAQ entries: \"What happens to my G$ when I send a gift?\", \"Who can claim a gift link?\", \"Can I get a gift back if nobody claims it?\" (the sender reclaims af",
+        "Closing band back to the send screen"
       ]
     }
   ],
-  "contracts": [],
+  "contracts": [
+    {
+      "name": "SenteGifts",
+      "purpose": "Pass G$ from the caller to any wallet with a short note in one signed transaction, and keep a public record of recent gifts so the app can list them.",
+      "state": [
+        "IERC20 immutable gd (GoodDollar on this network)",
+        "uint256 public totalGifts",
+        "uint256 public totalSent (smallest unit)",
+        "struct Gift { address from; address to; uint96 amount; uint64 at; string note; }",
+        "Gift[] private gifts (append-only)",
+        "uint256 public constant NOTE_MAX_BYTES = 240"
+      ],
+      "functions": [
+        {
+          "name": "constructor",
+          "who": "deployer",
+          "does": "stores the G$ token immutable and reverts on the zero address"
+        },
+        {
+          "name": "sendGift",
+          "who": "anyone holding G$",
+          "does": "rejects a zero recipient, recipient == sender, zero amount and a note over 240 bytes; pulls G$ from the caller with safeTransferFrom straight to the recipient, appends the gift, emits GiftSent; nonReentrant"
+        },
+        {
+          "name": "onTokenTransfer",
+          "who": "only the G$ token",
+          "does": "ERC-677 one-step path: reverts NotGoodDollar() unless msg.sender is gd, decodes (address to, string note) from data, forwards the received amount to the recipient and records it; nonReentrant"
+        },
+        {
+          "name": "recent",
+          "who": "anyone",
+          "does": "view: up to limit gifts, newest first, at most 20 per call"
+        },
+        {
+          "name": "giftsBy",
+          "who": "anyone",
+          "does": "view: gift indexes recorded from one sender, newest first, at most the 50 most recent"
+        },
+        {
+          "name": "giftAt",
+          "who": "anyone",
+          "does": "view: the full gift struct at an index"
+        }
+      ],
+      "events": [
+        "GiftSent(uint256 indexed id, address indexed from, address indexed to, uint256 amount, string note, uint256 at)"
+      ],
+      "invariants": [
+        "the contract's G$ balance is zero after every send, because it forwards and never holds",
+        "a send of 0 reverts and records nothing",
+        "a send to the zero address or to the sender reverts",
+        "totalSent equals the sum of the amounts of all recorded gifts",
+        "recent(5) on an empty contract returns an empty array and never returns more rows than asked for"
+      ],
+      "template": "none"
+    },
+    {
+      "name": "SenteCards",
+      "purpose": "Fund a shareable gift card: lock G$ behind a secret claim code, let whoever opens the link claim it once, and let the sender reclaim it after an expiry.",
+      "state": [
+        "IERC20 immutable gd",
+        "struct Card { address sender; uint96 amount; uint64 expiry; bool claimed; string note; bytes32 codeHash; }",
+        "mapping(bytes32 => Card) private cards",
+        "bytes32[] private ids (creation order)",
+        "uint256 public totalFunded",
+        "uint256 public totalClaimed"
+      ],
+      "functions": [
+        {
+          "name": "constructor",
+          "who": "deployer",
+          "does": "stores the G$ token immutable and reverts on the zero address"
+        },
+        {
+          "name": "fundCard",
+          "who": "anyone holding G$",
+          "does": "rejects a zero amount, a reused id, a zero codeHash, an expiry in the past or more than 365 days out, and a note over 240 bytes; pulls G$ from the caller and stores the card; emits CardFunded; nonReentrant"
+        },
+        {
+          "name": "claimCard",
+          "who": "anyone holding the code",
+          "does": "rejects an unknown id, an already claimed card, a card past its expiry and a wrong code (must equal codeHash); marks it claimed then safeTransfers to msg.sender; emits CardClaimed; nonReentrant"
+        },
+        {
+          "name": "reclaim",
+          "who": "the card's sender, after the expiry",
+          "does": "returns the amount to the sender and marks the card spent so it cannot be claimed twice; emits CardReclaimed; nonReentrant"
+        },
+        {
+          "name": "cardInfo",
+          "who": "anyone",
+          "does": "view: sender, amount, expiry, claimed, note and codeHash for an id"
+        },
+        {
+          "name": "cardCount",
+          "who": "anyone",
+          "does": "view: how many cards have been funded"
+        },
+        {
+          "name": "cardsBy",
+          "who": "anyone",
+          "does": "view: a sender's card ids, newest first, at most the 50 most recent"
+        },
+        {
+          "name": "outstanding",
+          "who": "anyone",
+          "does": "view: the contract's own G$ balance, which is everything still claimable"
+        }
+      ],
+      "events": [
+        "CardFunded(bytes32 indexed id, address indexed sender, uint256 amount, uint64 expiry, string note)",
+        "CardClaimed(bytes32 indexed id, address indexed claimer, uint256 amount)",
+        "CardReclaimed(bytes32 indexed id, address indexed sender, uint256 amount)"
+      ],
+      "invariants": [
+        "a card pays out exactly once: claim then claim reverts, and claim then reclaim reverts",
+        "a claim with a wrong code reverts and moves nothing",
+        "reclaim before the expiry reverts and reclaim from anyone but the sender reverts",
+        "the contract's G$ balance equals the sum of the unclaimed, unexpired card amounts",
+        "funding a card with a reused id reverts"
+      ],
+      "template": "none"
+    }
+  ],
   "data": [],
   "acceptance": [
     {
-      "name": "Home explains the app and shows demo mode",
+      "name": "Home explains the app and its sending state",
       "needs": "local",
       "steps": [
         {
@@ -56,49 +204,14 @@
         },
         {
           "expect": {
-            "text": "Demo mode"
-          }
-        },
-        {
-          "expect": {
-            "text": "Demo mode: nothing leaves your wallet yet"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Quick amount chip updates the send button",
-      "needs": "local",
-      "steps": [
-        {
-          "goto": "/"
-        },
-        {
-          "click": {
-            "text": "25"
-          }
-        },
-        {
-          "expect": {
-            "text": "Send 25 G$"
-          }
-        },
-        {
-          "fill": {
-            "label": "Amount"
-          },
-          "value": "250"
-        },
-        {
-          "expect": {
-            "text": "Send 250 G$"
+            "text": "Deploy the gift contract to go live"
           }
         }
       ]
     },
     {
       "name": "Sending with no recipient is refused",
-      "needs": "local",
+      "needs": "wallet",
       "steps": [
         {
           "goto": "/"
@@ -117,7 +230,7 @@
     },
     {
       "name": "A badly formed address is refused",
-      "needs": "local",
+      "needs": "wallet",
       "steps": [
         {
           "goto": "/"
@@ -147,8 +260,27 @@
       ]
     },
     {
-      "name": "A valid gift is recorded as a demo gift and appears in activity",
-      "needs": "local",
+      "name": "Quick chip drives the send button",
+      "needs": "wallet",
+      "steps": [
+        {
+          "goto": "/"
+        },
+        {
+          "click": {
+            "text": "25"
+          }
+        },
+        {
+          "expect": {
+            "text": "Send 25 G$"
+          }
+        }
+      ]
+    },
+    {
+      "name": "A gift is still recorded locally when no contract is deployed",
+      "needs": "wallet",
       "steps": [
         {
           "goto": "/"
@@ -177,12 +309,7 @@
         },
         {
           "expect": {
-            "text": "Demo gift recorded"
-          }
-        },
-        {
-          "expect": {
-            "text": "Jollof money"
+            "text": "saved on this device"
           }
         },
         {
@@ -201,77 +328,95 @@
       ]
     },
     {
-      "name": "Activity starts with a friendly empty state",
+      "name": "The gift link page previews a card",
       "needs": "local",
       "steps": [
         {
-          "goto": "/activity"
+          "goto": "/gift"
+        },
+        {
+          "fill": {
+            "label": "Amount"
+          },
+          "value": "25"
         },
         {
           "expect": {
-            "text": "Gifts you've sent"
+            "text": "25 G$"
           }
         }
       ]
     },
     {
-      "name": "About page answers what G$ is",
+      "name": "An unknown gift link is handled",
       "needs": "local",
       "steps": [
         {
-          "goto": "/about"
+          "goto": "/gift/not-a-real-card"
         },
         {
           "expect": {
-            "text": "What is G$?"
-          }
-        },
-        {
-          "click": {
-            "text": "What is GoodDollar?"
-          }
-        },
-        {
-          "expect": {
-            "text": "free-to-earn"
+            "text": "This card didn't arrive intact"
           }
         }
       ]
     },
     {
-      "name": "Navigation reaches every page",
-      "needs": "local",
+      "name": "A real gift is sent on chain",
+      "needs": "deployed",
       "steps": [
         {
           "goto": "/"
         },
         {
+          "connectWallet": true
+        },
+        {
+          "fill": {
+            "label": "Recipient"
+          },
+          "value": "0x1B4d6a7c8E2f3A4b5C6d7E8f901a2B3c4D5e6F70"
+        },
+        {
           "click": {
-            "text": "About"
+            "text": "10"
           }
+        },
+        {
+          "fill": {
+            "label": "Note"
+          },
+          "value": "Thanks for the lift"
+        },
+        {
+          "click": {
+            "text": "Send 10 G$"
+          }
+        },
+        {
+          "wait": 2000
         },
         {
           "expect": {
-            "route": "/about"
+            "text": "Gift sent"
           }
         },
         {
-          "click": {
-            "text": "Activity"
-          }
+          "goto": "/activity"
         },
         {
           "expect": {
-            "route": "/activity"
+            "text": "Thanks for the lift"
           }
         }
       ]
     }
   ],
   "outOfScope": [
-    "On-chain G$ transfers, the Send contract and deploy manifest (next milestone)",
-    "Wallet-signed gifts or any real payment: this build is demo only, saved on the device",
-    "Recipient usernames, contacts or address book",
-    "Multi-chain support, swaps or G$ earning/claiming"
+    "Recipient usernames, contacts or an address book",
+    "Swaps, G$ earning or claiming from GoodDollar's own protocol",
+    "Multi-chain support (Celo only)",
+    "Notifications by email or push",
+    "Admin fees or any way for an owner to take user funds"
   ]
 }

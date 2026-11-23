@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, CircleDashed, Coins, Sprout, Wallet } from "lucide-react";
+import { CheckCircle2, Coins, Gift, Send, Sprout, Wallet } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -14,14 +14,21 @@ const status = [
     tone: "success" as const,
     label: "Live",
   },
-  { icon: Sprout, title: "Demo gifts on this device", body: "Gifts you write are saved in this browser so you can reread them.", tone: "success" as const, label: "Done" },
   {
-    icon: CircleDashed,
-    title: "Sending G$ goes live in the next milestone",
-    body: "The transfer itself needs a contract and your signature. That comes next.",
-    tone: "warning" as const,
-    label: "Next",
+    icon: Send,
+    title: "Gifts send on chain with a note",
+    body: "Your wallet signs once, the G$ goes straight to the recipient, and the note is recorded on Celo.",
+    tone: "success" as const,
+    label: "Live",
   },
+  {
+    icon: Gift,
+    title: "Gift cards claim by link",
+    body: "Set G$ aside behind a claim link. The recipient takes it into their own wallet, and you can reclaim it after it expires.",
+    tone: "success" as const,
+    label: "Live",
+  },
+  { icon: Sprout, title: "Drafts on this device", body: "While the contract is not deployed, a gift you write is kept in this browser only.", tone: "default" as const, label: "Fallback" },
   { icon: Coins, title: "Built on Celo", body: "G$ lives on Celo, a low-fee network made for everyday money.", tone: "default" as const, label: "Always" },
 ];
 
@@ -31,16 +38,20 @@ const faqs = [
     a: "GoodDollar (G$) is a free-to-earn currency on Celo. People claim small amounts of it and use it for everyday things, which makes it a good fit for small, personal transfers.",
   },
   {
-    q: "Do I need a wallet to try the demo?",
-    a: "No. In this milestone everything stays on your device, so you can fill the form and see how a gift reads without connecting anything.",
+    q: "What happens to my G$ when I send a gift?",
+    a: "It goes straight to the recipient's wallet in the same transaction. Sente's contract pulls the amount you approved and forwards it, so it never keeps your money.",
   },
   {
-    q: "Where do my demo gifts go?",
-    a: "Into this browser's local storage, under the Activity page. They never leave the device, and clearing your browser data or pressing Clear demo gifts removes them.",
+    q: "Who can claim a gift link?",
+    a: "Anyone holding the link. The claim secret travels inside it, and the card can only be claimed once, so treat a gift link like cash.",
   },
   {
-    q: "When will real G$ transfers work?",
-    a: "In the next milestone. You will approve the G$ transfer from your own wallet, and the gift will show up on chain with its note.",
+    q: "Can I get a gift back if nobody claims it?",
+    a: "Yes. Every card has an expiry you choose when you fund it, seven, thirty or ninety days out. After that the sender can reclaim the G$ into their own wallet.",
+  },
+  {
+    q: "What do the drafts on this device do?",
+    a: "If the contract is not deployed yet, filling the form saves the gift in this browser instead of moving money, so you can still see how a note reads. They are listed under Activity and can be cleared there.",
   },
 ];
 

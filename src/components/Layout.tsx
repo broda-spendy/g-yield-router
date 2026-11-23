@@ -70,12 +70,12 @@ export default function Layout() {
               Gift links
             </Link>
             <Link to="/activity" className="hover:text-foreground">
-              Demo history
+              Activity
             </Link>
             <Link to="/about" className="hover:text-foreground">
               How G$ works
             </Link>
-            <span className="text-xs">Demo · no payments yet</span>
+            <span className="text-xs">On Celo</span>
           </nav>
         </div>
       </footer>

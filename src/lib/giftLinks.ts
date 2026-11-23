@@ -13,6 +13,9 @@ export interface GiftCardData {
   amount: string;
   note: string;
   from: string;
+  /** A card funded on chain: the contract's card id and the secret that claims it. */
+  cardId?: string;
+  cardCode?: string;
 }
 
 /** One link you made, remembered in this browser. */
@@ -109,7 +112,14 @@ export function tidyAmount(value: string) {
 
 /** Pack a card into the token that goes after "#/gift/". */
 export function encodeCard(card: GiftCardData) {
-  return encodeText(JSON.stringify({ a: tidyAmount(card.amount), n: cleanText(card.note, 80), f: cleanText(card.from, 30) }));
+  return encodeText(
+    JSON.stringify({
+      a: tidyAmount(card.amount),
+      n: cleanText(card.note, 80),
+      f: cleanText(card.from, 30),
+      ...(card.cardId && card.cardCode ? { i: card.cardId, k: card.cardCode } : {}),
+    }),
+  );
 }
 
 /** Read a card back out of a link. Anything malformed returns null instead of throwing. */
@@ -120,10 +130,14 @@ export function decodeCard(code: string): GiftCardData | null {
     const raw = parsed as Record<string, unknown>;
     const amount = tidyAmount(typeof raw.a === "string" ? raw.a : "");
     if (!amount) return null;
+    const word = /^0x[0-9a-fA-F]{64}$/;
+    const cardId = typeof raw.i === "string" && word.test(raw.i) ? raw.i : undefined;
+    const cardCode = typeof raw.k === "string" && word.test(raw.k) ? raw.k : undefined;
     return {
       amount,
       note: cleanText(typeof raw.n === "string" ? raw.n : "", 80),
       from: cleanText(typeof raw.f === "string" ? raw.f : "", 30),
+      ...(cardId && cardCode ? { cardId, cardCode } : {}),
     };
   } catch {
     return null;
@@ -149,8 +163,17 @@ export function rememberGiftLink(card: GiftCardData) {
   const amount = tidyAmount(card.amount);
   const note = cleanText(card.note, 80);
   const from = cleanText(card.from, 30);
-  const entry: SavedGiftLink = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), amount, note, from, at: Date.now() };
-  write([entry, ...read().filter((l) => !(l.amount === amount && l.note === note && l.from === from))].slice(0, 20));
+  const entry: SavedGiftLink = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    amount,
+    note,
+    from,
+    at: Date.now(),
+    ...(card.cardId && card.cardCode ? { cardId: card.cardId, cardCode: card.cardCode } : {}),
+  };
+  const same = (l: SavedGiftLink) =>
+    card.cardId && card.cardCode ? l.cardId === card.cardId : l.amount === amount && l.note === note && l.from === from;
+  write([entry, ...read().filter((l) => !same(l))].slice(0, 20));
   return entry;
 }
 

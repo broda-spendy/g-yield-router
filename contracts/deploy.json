@@ -1,0 +1,6 @@
+{
+  "contracts": [
+    { "name": "SenteGifts", "args": { "gd_": "${GOODDOLLAR}" } },
+    { "name": "SenteCards", "args": { "gd_": "${GOODDOLLAR}" } }
+  ]
+}

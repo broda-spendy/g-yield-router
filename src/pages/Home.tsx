@@ -4,6 +4,7 @@ import { ArrowRight, Link2, PenLine, Send, UserRoundCheck } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { SendPanel } from "../components/SendPanel";
 import { WalletCard } from "../components/WalletCard";
+import { ChainGiftsCard } from "../components/ChainGiftsCard";
 import { GiftRow } from "../components/GiftCard";
 import { Badge } from "../components/ui/badge";
 import { showAmount, totalAmount, useDemoGifts } from "../lib/gifts";
@@ -12,7 +13,7 @@ import { useWallet } from "../lib/useWallet";
 const steps = [
   { icon: UserRoundCheck, title: "Pick a recipient", body: "Paste any Celo wallet address. No usernames, no sign-up." },
   { icon: PenLine, title: "Write a note", body: "A few words so the money carries a reason with it." },
-  { icon: Send, title: "Send G$", body: "Live transfers arrive in the next milestone. Today your gift is saved here as a demo." },
+  { icon: Send, title: "Sign once", body: "Your wallet sends the G$ straight to theirs, with the note recorded on Celo." },
 ];
 
 export default function Home() {
@@ -51,7 +52,7 @@ export default function Home() {
             <div className="mt-6 flex flex-wrap items-center gap-2">
               <Badge tone={account ? "success" : "default"}>{account ? "Wallet connected" : "Wallet ready to connect"}</Badge>
               <Badge>Live on {networkName}</Badge>
-              <Badge tone="warning">Demo mode</Badge>
+              <Badge tone="success">G$ moves on chain</Badge>
             </div>
 
             <dl className="mt-9 grid max-w-md grid-cols-2 gap-4 border-t border-border pt-6">
@@ -86,12 +87,12 @@ export default function Home() {
             </span>
             <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">No address to hand? Send the card itself.</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Pack an amount and a note into one link, drop it in a chat, and the person opens the card on their own phone.
+              Set G$ aside on Celo behind one link, drop it in a chat, and the person opens the card and claims it into their own wallet.
             </p>
           </div>
           <Link to="/gift" className="shrink-0">
             <Button size="lg" className="h-12 rounded-xl text-base">
-              Make a gift link
+              Make a gift card
               <ArrowRight className="size-4" aria-hidden="true" />
             </Button>
           </Link>
@@ -116,36 +117,43 @@ export default function Home() {
                 </div>
                 <h3 className="mt-3 font-display text-lg font-semibold">{s.title}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-primary-foreground/70">{s.body}</p>
-                {i === 2 && (
-                  <span className="mt-3 inline-block rounded-full border border-primary-foreground/30 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.14em] text-primary-foreground/70">
-                    Coming soon
-                  </span>
-                )}
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* Recent demo gifts */}
+      {/* On chain: the public strip of real gifts */}
       <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:py-16">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
           <div>
-            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Gifts you've composed</h2>
+            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Gifts on chain</h2>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Every gift written here is kept in this browser, so you can see how a note reads on the other side. Nothing is signed and
-              nothing moves.
+              Each gift is recorded by the Sente contract with its note, so the person receiving it can look it up on Celo.
             </p>
             <Link to="/activity" className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline">
-              See all gifts
+              See everything you've sent
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
+          <ChainGiftsCard limit={3} />
+        </div>
+      </section>
 
-          <div className="rounded-2xl border border-border bg-card px-5 shadow-sm">
+      {/* Local demo drafts */}
+      <section className="border-t border-border bg-card">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
+          <div>
+            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Your practice cards</h2>
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+              Gifts you wrote while the contract was still being deployed stay in this browser. They are drafts, not payments.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-background px-5 shadow-sm">
             {recent.length === 0 ? (
               <div className="py-10 text-center">
-                <p className="font-display text-lg font-semibold">No gifts yet</p>
+                <p className="font-display text-lg font-semibold">No drafts yet</p>
                 <p className="mx-auto mt-1 max-w-xs text-sm text-muted-foreground">
                   Compose one above and it will appear here, note and all.
                 </p>
